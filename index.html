@@ -80,17 +80,20 @@
     }
     .emi-calculator__footer {
         background: #e1e4e9; 
-        padding: 1rem;
+        padding: 1rem 0.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+    .emi-calculator__footer__button {
+        position: relative;
     }
     .emi-calculator__footer__button button {
         border: none;
         background: #2d2d2d;
         color: #fff;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); 
-        padding: 0.5rem 2rem;
+        padding: 0.5rem 1rem;
         border-radius: 0.5rem;
         cursor: pointer;
         transition: box-shadow 0.25s ease-in-out;
@@ -119,6 +122,8 @@
         letter-spacing: 2px;
     }
     .emi-calculator__foter__result__unit {
+        font-size: 0.9rem;
+        text-transform: uppercase;
         opacity: 0.8;
     }
 </style>
@@ -202,13 +207,22 @@
     }
 
     function calculateEMI() {
+        let emi;
+
         const principal = Number(document.querySelector("#loanInput").value);
-        const rateOfInterest = Number(document.querySelector("#interestInput").value) / 100;
+        const rateOfInterest = Number(document.querySelector("#interestInput").value);
         const numberOfMonths = Number(document.querySelector("#tenorScale").value);
 
-        const rateFactor = Math.pow((1 + rateOfInterest), numberOfMonths);
-        let emi = (principal * rateOfInterest) * ((rateFactor) / (rateFactor - 1));
-        emi = emi.toFixed(2);
+        if(rateOfInterest) {
+            const monthlyInterest = (rateOfInterest / (12 * 100));
+            const rateFactor = Math.pow((1 + monthlyInterest), numberOfMonths);
+
+            emi = (principal * monthlyInterest) * ((rateFactor) / (rateFactor - 1));
+            emi = emi.toFixed(2);
+        } else {
+            emi = (principal / numberOfMonths).toFixed(2);
+        }
+
         document.querySelector("#emi-calculator__footer__result__amount").innerHTML = emi;
     }
 
